@@ -1,3 +1,5 @@
+namespace TextAIClassifierWeb;
+
 public class ClassificationResponse
 {
     public string? id { get; set; }

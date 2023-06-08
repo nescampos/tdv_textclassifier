@@ -1,20 +1,9 @@
-﻿using Microsoft.Extensions.Configuration;
+var builder = WebApplication.CreateBuilder(args);
 
-IConfigurationRoot configuration = new ConfigurationBuilder()
-    .AddUserSecrets<Program>()
-    .Build();
+builder.Services.AddControllers();
 
+var app = builder.Build();
 
-Console.WriteLine("Please, enter your message:");
+app.MapControllers();
 
-string message = Console.ReadLine();
-
-if(!string.IsNullOrWhiteSpace(message))
-{
-    ClassifierService classifierService = new ClassifierService(configuration);
-    await classifierService.ClassifyText(message);
-}
-else
-{
-    Console.WriteLine("Please, enter a valid message");
-}
+app.Run();

@@ -1,6 +1,9 @@
-using Newtonsoft.Json;
+using System.Text.Json;
 using System.Text;
 using Microsoft.Extensions.Configuration;
+
+
+namespace TextAIClassifierWeb;
 
 public class ClassifierService
 {
@@ -10,7 +13,7 @@ public class ClassifierService
         this.configuration = configuration;
     }
 
-    public async Task ClassifyText(string message)
+    public async Task<List<Classification>> ClassifyText(string message)
     {
         var client = new HttpClient();
         List<CategoryRequestExample> exampleList = GenerateExamples();
@@ -20,7 +23,7 @@ public class ClassifierService
             truncate = "END",
             examples = exampleList
         };
-        var json = JsonConvert.SerializeObject(classificationRequest);
+        var json = JsonSerializer.Serialize(classificationRequest);
         var request = new HttpRequestMessage
         {
             Method = HttpMethod.Post,
@@ -37,17 +40,16 @@ public class ClassifierService
         {
             response.EnsureSuccessStatusCode();
             var body = await response.Content.ReadAsStringAsync();
-            var respuesta = JsonConvert.DeserializeObject<ClassificationResponse>(body);
-            if (respuesta != null)
+            var bodyResponse = JsonSerializer.Deserialize<ClassificationResponse>(body);
+            if (bodyResponse != null)
             {
-                Console.WriteLine("Results for your message: " + message);
-                foreach(var classification in respuesta.classifications)
-                {
-                    Console.WriteLine("Classification: " + classification.prediction + ", Confidence: " + classification.confidence);
-                }
+                return bodyResponse.classifications;
             }
         }
+        return null;
     }
+
+
 
     private static List<CategoryRequestExample> GenerateExamples()
     {
@@ -64,4 +66,6 @@ public class ClassifierService
         exampleList.Add(new CategoryRequestExample { text = "There are no pending requests", label = "Other (or manual classification)" });
         return exampleList;
     }
+
+
 }

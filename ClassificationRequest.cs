@@ -1,3 +1,5 @@
+namespace TextAIClassifierWeb;
+
 public class ClassificationRequest
 {
     public List<string>? inputs { get; set; }
