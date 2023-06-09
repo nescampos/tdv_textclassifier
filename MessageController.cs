@@ -8,21 +8,21 @@ namespace TextAIClassifierWeb;
 [Route("[controller]")]
 public class MessageController : TwilioController
 {
-    private ClassifierService _classifierService;
+    private readonly ClassifierService classifierService;
 
-    public MessageController(IConfiguration configuration)
+    public MessageController(ClassifierService classifierService)
     {
-        _classifierService = new ClassifierService(configuration);
+        this.classifierService = classifierService;
     }
 
     [HttpPost]
     public async Task<IActionResult> Index(SmsRequest incomingMessage)
     {
         var response = new MessagingResponse();
-        var predictionList = await _classifierService.ClassifyText(incomingMessage.Body);
-        foreach(Classification prediction in predictionList)
+        var predictionList = await classifierService.ClassifyText(incomingMessage.Body);
+        foreach(var prediction in predictionList)
         {
-            response.Message($"Prediction: {prediction.prediction} with confidence {prediction.confidence}");
+            response.Message($"Prediction: {prediction.Prediction} with confidence {prediction.Confidence:P2}");
         }
         return TwiML(response);
     }
