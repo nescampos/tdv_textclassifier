@@ -1,14 +1,25 @@
+using System.Text.Json.Serialization;
+
 namespace TextAIClassifierWeb;
+
 
 public class ClassificationRequest
 {
-    public List<string>? inputs { get; set; }
-    public List<CategoryRequestExample>? examples { get; set; }
-    public string? truncate { get; set; }
+    [JsonPropertyName("inputs")]
+    public List<string> Inputs { get; set; }
+    
+    [JsonPropertyName("examples")]
+    public List<CategoryRequestExample> Examples { get; set; }
+    
+    [JsonPropertyName("truncate")]
+    public string? Truncate { get; set; }
 }
 
 public class CategoryRequestExample
 {
-    public string? text { get; set; }
-    public string? label { get; set; }
+    [JsonPropertyName("text")]
+    public string Text { get; set; }
+    
+    [JsonPropertyName("label")]
+    public string Label { get; set; }
 }
